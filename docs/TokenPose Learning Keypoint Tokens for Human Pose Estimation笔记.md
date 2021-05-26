@@ -7,7 +7,7 @@
 
 ### 1.1 Why
 
-+ 关键点检测深度依赖各部位之间的视觉线索和结构约束等信息，**然而CNN方法缺乏显式地学习关键点之间约束关系的能力**。(Human pose estimation deeply relies on visual clues and anatomical constraints between parts to locate keypoints. Most existing CNN-based methods do well in visual representation, however, lacking in the ability to explicitly learn the constraint relationships between keypoints.)
++ 关键点检测深度依赖各部位之间的**视觉线索**和**结构约束**等信息，**然而CNN方法缺乏显式地学习关键点之间约束关系的能力**。(Human pose estimation deeply relies on visual clues and anatomical constraints between parts to locate keypoints. Most existing CNN-based methods do well in visual representation, however, lacking in the ability to explicitly learn the constraint relationships between keypoints.)
 
 ### 1.2 What
 
