@@ -3,6 +3,12 @@
 + Paper: [TokenPose: Learning Keypoint Tokens for Human Pose Estimation](https://arxiv.org/abs/2104.03516)
 + Code: [leeyegy/TokenPose](https://github.com/leeyegy/TokenPose)
 
+## 0. Summary Keywords
+
++ explicitly
++ simultaneously learn **constraint relationships** and **appearance cues**
++ lightweight
+
 ## 1. Introduction
 
 ### 1.1 Why
