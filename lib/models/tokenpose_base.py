@@ -423,10 +423,10 @@ class TokenPose_TB_base(nn.Module):
     def forward(self, feature, mask = None):
         ipdb.set_trace()
         ##feature.shape为[1, 32, 64, 48]
-        ##self.patch_size为[4, 3]，表示每个小image patch的H和W分别为4、3；
+        ##self.patch_size为[4, 3]，表示每个小image patch的h和w分别为4、3；
         p = self.patch_size
         # transformer
-        ##[1, 32, 64, 48] -> [1, 256, 384]
+        ##[1, 32, 64, 48] -> [1, 256, 384]；256 = (64 / 4) * (48 / 3) = 16 * 16，总共256个小patch；
         x = rearrange(feature, 'b c (h p1) (w p2) -> b (h w) (p1 p2 c)', p1 = p[0], p2 = p[1])
         ##[1, 256, 384] -> [1, 256, 192]
         x = self.patch_to_embedding(x)
