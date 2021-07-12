@@ -423,7 +423,7 @@ class TokenPose_TB_base(nn.Module):
     def forward(self, feature, mask = None):
         ipdb.set_trace()
         ##feature.shape为[1, 32, 64, 48]
-        ##self.patch_size为[4, 3]
+        ##self.patch_size为[4, 3]，表示每个小image patch的H和W分别为4、3；
         p = self.patch_size
         # transformer
         ##[1, 32, 64, 48] -> [1, 256, 384]
