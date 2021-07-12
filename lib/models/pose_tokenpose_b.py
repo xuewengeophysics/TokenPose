@@ -19,6 +19,8 @@ import math
 from .tokenpose_base import TokenPose_TB_base
 from .hr_base import HRNET_base
 
+import ipdb
+
 BN_MOMENTUM = 0.1
 logger = logging.getLogger(__name__)
 
@@ -28,7 +30,7 @@ class TokenPose_B(nn.Module):
 
         extra = cfg.MODEL.EXTRA
 
-        super(PoseMobileNet, self).__init__()
+        super(TokenPose_B, self).__init__()
 
         print(cfg.MODEL)
         ##################################################
@@ -46,8 +48,12 @@ class TokenPose_B(nn.Module):
         ###################################################3
 
     def forward(self, x):
+        ##x.shape为[1, 3, 256, 192]
+        ##[1, 3, 256, 192] -> [1, 32, 64, 48]
         x = self.pre_feature(x)
+        ##[1, 32, 64, 48] -> [1, 17, 64, 48]
         x = self.transformer(x)
+        ##最后输出的是17个关键点的heatmap
         return x
 
     def init_weights(self, pretrained=''):
