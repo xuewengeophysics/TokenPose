@@ -9,6 +9,8 @@ from torch import nn
 from timm.models.layers.weight_init import trunc_normal_
 import math
 
+import ipdb
+
 MIN_NUM_PATCHES = 16
 BN_MOMENTUM = 0.1
 
@@ -419,25 +421,42 @@ class TokenPose_TB_base(nn.Module):
             nn.init.constant_(m.weight, 1.0)
 
     def forward(self, feature, mask = None):
+        ipdb.set_trace()
+        ##feature.shape为[1, 32, 64, 48]
+        ##self.patch_size为[4, 3]
         p = self.patch_size
         # transformer
+        ##[1, 32, 64, 48] -> [1, 256, 384]
         x = rearrange(feature, 'b c (h p1) (w p2) -> b (h w) (p1 p2 c)', p1 = p[0], p2 = p[1])
+        ##[1, 256, 384] -> [1, 256, 192]
         x = self.patch_to_embedding(x)
 
+        ##b代表batch_size，在这里等于1
         b, n, _ = x.shape
 
+        ##self.keypoint_token的维度为[1, 17, 192]
+        ##在这里，针对每个样本的每个关键点都生成1份keypoint_token
+        ##[1, 17, 192] -> [b, 17, 192]
         keypoint_tokens = repeat(self.keypoint_token, '() n d -> b n d', b = b)
         if self.pos_embedding_type in ["sine","sine-full"] :
+            ##self.pos_embedding[:, :256].shape为[1, 256, 192]
+            ##[1, 256, 192] -> [1, 256, 192]；给token加上position
             x += self.pos_embedding[:, :n]
+            ##[1, 256, 192] -> [1, 273, 192]
             x = torch.cat((keypoint_tokens, x), dim=1)
         else:
             x = torch.cat((keypoint_tokens, x), dim=1)
             x += self.pos_embedding[:, :(n + self.num_keypoints)]
+        ##[1, 273, 192] -> [1, 273, 192]
         x = self.dropout(x)
 
+        ##[1, 273, 192] -> [1, 273, 192]
         x = self.transformer(x, mask,self.pos_embedding)
+        ##[1, 273, 192] -> [1, 17, 192]
         x = self.to_keypoint_token(x[:, 0:self.num_keypoints])
+        ##[1, 17, 192] -> [1, 17, 3072]；3072 = 64 x 48
         x = self.mlp_head(x)
+        ##[1, 17, 3072] -> [1, 17, 64, 48]
         x = rearrange(x,'b c (p1 p2) -> b c p1 p2',p1=self.heatmap_size[0],p2=self.heatmap_size[1])
         return x
 
