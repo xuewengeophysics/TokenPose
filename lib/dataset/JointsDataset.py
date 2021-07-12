@@ -16,7 +16,7 @@ import random
 import cv2
 import numpy as np
 import torch
-import nori2 as nr
+# import nori2 as nr
 from torch.utils.data import Dataset
 
 from utils.transforms import get_affine_transform
@@ -115,8 +115,10 @@ class JointsDataset(Dataset):
         return len(self.db)
 
     def __getitem__(self, idx):
+        """
         if self.fn is None:
             self.fn = nr.Fetcher()
+        """
 
         db_rec = copy.deepcopy(self.db[idx])
 
@@ -124,6 +126,7 @@ class JointsDataset(Dataset):
         filename = db_rec['filename'] if 'filename' in db_rec else ''
         imgnum = db_rec['imgnum'] if 'imgnum' in db_rec else ''
 
+        """
         if 'nori_id' in db_rec.keys():
             nori_id = db_rec['nori_id']
             ns = np.fromstring(self.fn.get(nori_id), dtype=np.uint8)
@@ -138,6 +141,17 @@ class JointsDataset(Dataset):
                 data_numpy = cv2.imread(
                     image_file, cv2.IMREAD_COLOR | cv2.IMREAD_IGNORE_ORIENTATION
                 )
+        """
+
+        if self.data_format == 'zip':
+            from utils import zipreader
+            data_numpy = zipreader.imread(
+                image_file, cv2.IMREAD_COLOR | cv2.IMREAD_IGNORE_ORIENTATION
+            )
+        else:
+            data_numpy = cv2.imread(
+                image_file, cv2.IMREAD_COLOR | cv2.IMREAD_IGNORE_ORIENTATION
+            )
 
         if self.color_rgb:
             data_numpy = cv2.cvtColor(data_numpy, cv2.COLOR_BGR2RGB)
